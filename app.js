@@ -1,22 +1,21 @@
 const express = require ('express');
 const bodyParser = require('body-parser');
 const app = express();
-const dotenv = require('dotenv');
-dotenv.config.use({path:'config.env'});
+if (process.env.NODE_ENV !== "production") {
+   require("dotenv").config();
+ }
+
 const mongoose = require('mongoose');
 const Diary = require('./models/Diary');
 const methodOverride = require('method-override');
-const port = process.env.PORT || 3000;
+const port =  process.env.PORT || 3000 ;
+
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
-
-
 app.use(methodOverride('_method'));
-
-
 //database : 
-const url = 'mongodb+srv://nessma:nessma00@expresscluster.4ensye9.mongodb.net/Diary?retryWrites=true&w=majority';
+const url = "mongodb+srv://"+process.env.USER_NAME+":"+process.env.USER_PASSWORD+'@expresscluster.4ensye9.mongodb.net/Diary?retryWrites=true&w=majority';
 mongoose.connect(url,{useNewUrlParser:true,
                       useUnifiedTopology:true
                      }).then(console.log("mongo db connected successfully"))
@@ -77,4 +76,5 @@ app.delete('/diary/delete/:id',(req, res)=> {
       });
 
 
- app.listen (port,()=>{console.log('listening');});
+ app.listen (port,()=>{console.log('listening');  });
+//process.env.USER_PASSWORD
